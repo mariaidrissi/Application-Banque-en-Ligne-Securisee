@@ -8,28 +8,28 @@
 <body>
   <header>
     <h1>Changez votre mot de passe</h1>
+    <form action="connexion.php">
+	<input class="buttonStyle" type="submit" value="Retour"/>
+    </form>
   </header>
   
   <section>
-      <div class="login-page">
-        <div class="form">
-            <form method="POST" action="../controller/controller.php">
-                <input type="hidden" name="action" value="changeMdp">
-		<input type="text" name="login" placeholder="login"/>
-		<input type="password" name="ancienMdp" placeholder="ancienMdp"/>
-                <input type="password" name="nouveauMdp" placeholder="nouveauMdp"/>
-                <button>Mettre a jour</button>
-	    </form>
-	   <form action="connexion.php">
-		<input type="submit" value="Retour"/>
-	   </form>
-        </div>
-      </div>
+	<form method="POST" action="../controller/controller.php">
+	  <div class="login">
+           <input type="hidden" name="action" value="changeMdp">
+	   <input type="text" name="login" placeholder="login"/>
+	   <input type="password" name="ancienMdp" placeholder="ancienMdp"/>
+           <input type="password" name="nouveauMdp" placeholder="nouveauMdp"/>
+	  </div>
+	  <div>
+	   <button class="buttonConnexion">Mettre a jour</button>
+	  </div>
+	</form>
 
 <?php
       session_start();
       if (isset($_REQUEST["vide"])) {
-        echo '<p class="errmsg">Merci de saisir votre login et votre mot de passe</p>';
+        echo '<p class="messageErreur">Merci de saisir votre login et votre mot de passe</p>';
       }
       ?>
   </section>

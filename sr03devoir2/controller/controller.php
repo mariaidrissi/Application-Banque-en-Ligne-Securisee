@@ -11,6 +11,7 @@ $urlredircompte = "../view/accueil.php";
 $urlredirloginchk = "../view/loginChk.php";
 $urlredircheckfalse = "../view/virement.php?loginchkfail";
 $urlredirtransok = "../view/virement.php?transok";
+$urlredirtransfail = "../view/virement.php?transfail";
 $urlredirtrfmt= "../view/virement.php?trfmt";
 $urlredirloginchknull = "../view/loginChk.php?nullvalue";
 $urlredirlisteclient = "../view/ficheclient.php";
@@ -18,8 +19,9 @@ $urlredirdisconnect = "../view/deconnexion.php";
 $urlredirmessagerie = "../view/messagerie.php";
 $urlredirvirementvide="../view/virement.php?nullvalue";
 $urlredirvirement = "../view/virement.php";
-$urlredircompteok = "../view/messagerie.php?msg_ok";
-
+$urlredirmessageok = "../view/messagerie.php?msg_ok";
+$urlredirmessagefail = "../view/messagerie.php?msg_fail";
+$urlredirficheclient = "../view/ficheclient.php";
 session_start();
 
 // URL de redirection par défaut (si pas d'action ou action non reconnue)
@@ -31,13 +33,13 @@ $url_redirect = $urlredirdefault;
           /* ======== AUTHENT ======== */
           if (!isset($_POST['login']) || !isset($_POST['mdp']) || $_POST['login'] == "" || $_POST['mdp'] == "") {
               // manque login ou mot de passe
-              $url_redirect = $urlredirnull;
+              $url_redirect = $urlredirvide;
               
           } else {
 
 		  //faire prepared statement pour verifier si bloque et nb tentatives
               	$utilisateur = findUser($_REQUEST['login'], $_REQUEST['mdp']);
-		error_log($utilisateur['nom']);
+		//error_log($utilisateur['nom']);
 		if($_SESSION['tentatives']==3){
 		      	if(time() - $_SESSION['last_login'] < 10*60*60){
 				header("Location: $urlredirbadvalue");
@@ -53,20 +55,18 @@ $url_redirect = $urlredirdefault;
 			}
 			else{
 				$_SESSION["connected_user"] = $utilisateur;
-				if($utilisateur['profil_user'] == "CLIENT"){
-					$_SESSION['listeEmployes'] = listerEmployes();
-				}else {
-	     				$_SESSION['listeClients'] = listerClients();
-					$_SESSION['listeUsers'] = findAllUsers();
-				}
                 		$url_redirect = $urlredircompte;
 			}
 		}
 	  }
       } else if ($_REQUEST['action'] == 'changeMdp'){
 
-	      if (!isset($_POST['login']) || !isset($_POST['ancienmdp']) || !isset($_POST['nouveauMdp']) || $_POST['login'] == "" || $_POST['mdp'] == "" || $_POST['nouveauMdp'] == "" || strlen($_POST['nouveauMdp']) < 12) {
+	      if (!isset($_POST['login']) || !isset($_POST['ancienmdp']) || !isset($_POST['nouveauMdp']) || $_POST['login'] == "" || $_POST['mdp'] == "" || $_POST['nouveauMdp'] == "") {
 		      $url_redirect = $urlredirchangevide;
+
+	      if(strlen($_POST['nouveauMdp']) < 12) {
+	              $url_redirect = $urlredirchangefail;
+	      }
 
 	      $utilisateur = findUser($_POST['login'], $_POST['ancienMdp']);
 	          if($utilisateur == false){			
@@ -101,7 +101,11 @@ $url_redirect = $urlredirdefault;
 					
 				if (is_numeric ($_SESSION['montant']) && $_SESSION['montant'] > 0 && $_SESSION['userVirement']['solde_compte']-$_SESSION['montant'] >=0) {
 	
-					transfert($_SESSION['destination'],$_SESSION["userVirement"]["numero_compte"], $_SESSION['montant']);
+					$result = transfert($_SESSION['destination'],$_SESSION["userVirement"]["numero_compte"], $_SESSION['montant']);
+					if($result==false){
+						$url_redirect = $urlredirtransfail;
+						return;
+					}
 					if($_SESSION['userVirement']['numero_compte'] == $_SESSION['connected_user']['numero_compte']){
 						$_SESSION["connected_user"]["solde_compte"] = $_SESSION["connected_user"]["solde_compte"] -  $_SESSION['montant'];
 					}
@@ -109,8 +113,6 @@ $url_redirect = $urlredirdefault;
 				} else {
               				$url_redirect = $urlredirtrfmt;
 				}
-				unset($_SESSION['montant']);
-				unset($_SESSION['destination']);
 			}
 			else
 				$url_redirect = $urlredircheckfalse;
@@ -140,20 +142,34 @@ $url_redirect = $urlredirdefault;
 
       } else if ($_REQUEST['action'] == 'sendmsg') {
 
-		addMessage($_REQUEST['to'],$_SESSION["connected_user"]["id_user"],$_REQUEST['sujet'],$_REQUEST['corps']);
-		$url_redirect = $urlredircompteok;
+		$result = addMessage($_REQUEST['to'],$_SESSION["connected_user"]["id_user"],$_REQUEST['sujet'],$_REQUEST['corps']);
+		if($result == false){
+			$url_redirect=$urlredirmessagefail;
+		}	
+		$url_redirect = $urlredirmessageok;
               
       } else if ($_REQUEST['action'] == 'msglist') {
-	
-         	 $_SESSION['messagesRecus'] = findMessagesInbox($_SESSION["connected_user"]["id_user"]);
-		 $url_redirect = $urlredirmessagerie;
+		
+		if($_SESSION['connected_user']['profil_user'] == "CLIENT")
+			$_SESSION['listeEmployes'] = listerEmployes();
+		else
+			$_SESSION['listeUsers'] = findAllUsers();
+
+         	$_SESSION['messagesRecus'] = findMessagesInbox($_SESSION["connected_user"]["id_user"]);
+		$url_redirect = $urlredirmessagerie;
 
       }else if ($_REQUEST['action'] == 'retourAccueil'){
-	      unset($_SESSION['userVirement']);
-	      unset($_SESSION['nomClientVirement']);
-	     	unset($_SESSION['montant']);
+
+		unset($_SESSION['userVirement']);
+		unset($_SESSION['nomClientVirement']);
+		unset($_SESSION['montant']);
 		unset($_SESSION['destination']);
 		$url_redirect = $urlredircompte;
+      
+      }else if ($_REQUEST['action'] == 'ficheclient'){
+		
+	      $_SESSION['listeClients'] = listerClients();
+	      $url_redirect = $urlredirficheclient;
       }
   }  
   

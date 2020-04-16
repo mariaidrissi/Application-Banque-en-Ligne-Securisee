@@ -98,7 +98,8 @@ if(isset($_SESSION['destination'])){
 		echo '<article>';
 		echo '<div class="fieldset">';
 		echo '<h3>Fiche client</h3>';
-		echo '<form action="ficheclient.php" method=post>';
+		echo '<form action="../controller/controller.php" method=post>';
+		echo '<input type="hidden" name="action" value="ficheclient">';
 		echo '<input class="buttonStyle" type="submit" value="Acceder aux fiches client">';
 		echo '</form>';
 		echo '</div>';

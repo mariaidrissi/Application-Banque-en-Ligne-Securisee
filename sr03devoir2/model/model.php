@@ -16,7 +16,7 @@ function findUser($login, $pwd) {
 	$login = $mysqli->real_escape_string($login);
 	$pwd = $mysqli->real_escape_string($pwd);
 	
-	error_log(password_hash($pwd, PASSWORD_BCRYPT));
+	//error_log(password_hash($pwd, PASSWORD_BCRYPT));
 	
 	$req = $mysqli->prepare("select nom,prenom,login,mot_de_passe,id_user,numero_compte,profil_user,solde_compte from USERS where login=?;");
 	if ($req) {
@@ -161,20 +161,25 @@ function addMessage($to,$from,$subject,$body) {
   $mysqli = getMySqliConnection();
 
   if ($mysqli->connect_error) {
-      echo 'Erreur connection BDD (' . $mysqli->connect_errno . ') '. $mysqli->connect_error;
+	  echo 'Erreur connection BDD (' . $mysqli->connect_errno . ') '. $mysqli->connect_error;
+	  return false;
   } else {
 	$to = htmlspecialchars($to);
 	$from = htmlspecialchars($from);
 	$subject = htmlspecialchars($subject);
 	$body = htmlspecialchars($body);
 
+	$subject = preg_replace("/\r\n|\r|\n/",'<br/>',$subject);
+	$body = preg_replace("/\r\n|\r|\n/",'<br/>',$body);
+
       $req="insert into MESSAGES(id_user_to,id_user_from,sujet_msg,corps_msg) values($to,$from,'$subject','$body')";
       if (!$result = $mysqli->query($req)) {
-          echo 'Erreur dans l\'envoi du message !';
+	      echo 'Erreur dans l\'envoi du message !';
+	      return false;
       }
       $mysqli->close();
   }
-
+  return true;
 }
 
 

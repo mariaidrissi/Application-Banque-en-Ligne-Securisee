@@ -8,8 +8,8 @@ if(!isset($_SESSION["connected_user"])){
 
 <script>
 
-function updateMessage(body){
-	
+function corpsMessage(body){
+ 
       	body = body.replace('&', '&amp;');
       	body = body.replace('<', '&lt;');
       	body = body.replace('>', '&gt;');
@@ -17,7 +17,7 @@ function updateMessage(body){
       	body = body.replace("'", '&#x27;');
       	body = body.replace("/", '&#x2F;');
 	body = body.replace("`", '&grave');
-	
+
 	document.getElementById("message").innerHTML = body;
 }
 
@@ -54,23 +54,26 @@ function updateMessage(body){
         <article>
           <div class="fieldset_messages">
             <table>
-              <tr><th>Expéditeur</th><th>Sujet</th></tr>
+              <tr><th>Expéditeur</th><th>Sujet</th><th>Message</th></tr>
 	      <?php
 		
               foreach ($_SESSION['messagesRecus'] as $cle => $message) {
                 echo '<tr>';
                 echo '<td>'.$message['nom'].' '.$message['prenom'].'</td>';
-                echo '<td><button class="sujet" onclick="updateMessage(\''.$message['corps_msg'].'\')">'.$message['sujet_msg'].'</button></td>';
+                //echo '<td><button type="button" class="sujet" onclick="corpsMessage(\''.$message['corps_msg'].'\')">'.$message['sujet_msg'].'</button></td>';
+		echo '<td>'.addslashes($message['sujet_msg']).'</td>';
+		echo '<td>'.addslashes($message['corps_msg']).'</td>';
 		echo '</tr>';
               }
                ?>
 	    </table>
+<!--
 	   <br/>
 	   <br/>
 	   <div id="message" class="message">
 Selectionnez un message.
 	   </div>
-
+-->
 	  </div>
 	</article>
 
@@ -114,8 +117,10 @@ Selectionnez un message.
                   <button class="buttonStyle" style="margin-top:3%;">Envoyer</button>
               	<?php
               		if (isset($_REQUEST["msg_ok"])) {
-                	echo '<p style="color:green;">Message envoyé avec succès.</p>';
-              		}
+                	echo '<p class="messageReussite">Message envoyé avec succès.</p>';
+			}else if (isset($_REQUEST['msg_fail'])) {
+			echo '<p class="messageErreur">Le message n\'a pas pu etre envoye.</p>';
+			}
 		?>
 
 	     </div>

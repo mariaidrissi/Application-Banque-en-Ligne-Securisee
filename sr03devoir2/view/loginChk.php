@@ -25,14 +25,14 @@ if(!isset($_SESSION["connected_user"])){
                 <input type="hidden" name="action" value="authenticateChk">
                 <input type="text" name="login" placeholder="login"/>
                 <input type="password" name="mdp" placeholder="mot de passe"/>
-                <button class="buttonConnexion">Login</button>
+                <button>Login</button>
             </form>
         </div>
       </div>
 
 <?php
       if (isset($_REQUEST["nullvalue"])) {
-        echo '<p class="errmsg">Merci de saisir votre login et votre mot de passe</p>';
+        echo '<p class="messageErreur">Merci de saisir votre login et votre mot de passe</p>';
       }
       ?>
   </section>
