@@ -21,13 +21,12 @@
 	session_destroy();
 ?>
   <section>
-
 	<p>Vous avez ete deconnecte !</p>
-      <div style="margin:2%;">
-	<form action="../index.php">
+      	<div style="margin:2%;">
+	   <form action="../index.php">
 		<input class="buttonConnexion" type="submit" value="Se connecter"/>
-	</form>
-      </div>
+	   </form>
+      	</div>
   </section>
 </body>
 </html>

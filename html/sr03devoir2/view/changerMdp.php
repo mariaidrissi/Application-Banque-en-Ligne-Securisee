@@ -10,7 +10,6 @@
     <h1>Changez votre mot de passe</h1>
     <button class="buttonStyle" onclick="location.href='connexion.php'">Revenir a l'accueil</button>
   </header>
-  
   <section>
 	<form method="POST" action="../controller/controller.php">
 	  <div class="login">
@@ -28,7 +27,7 @@ var ok =false;
 
 function afficher(){
 	if(!ok)
-		indicP.style.display="block";
+	   indicP.style.display="block";
 }
 
 function cacher() {
@@ -36,7 +35,6 @@ function cacher() {
 }
 
 pwd.addEventListener("focus", afficher, true);
-
 pwd.addEventListener("blur", cacher, true);
 
 pwd.onkeyup = function() {
@@ -60,16 +58,14 @@ pwd.onkeyup = function() {
 }
 </script>
 	  <div>
-	   <button class="buttonConnexion">Mettre a jour</button>
+	   <input type="submit" class="buttonConnexion" value="Mettre a jour"/>
 	  </div>
 	</form>
 
 <?php
-      session_start();
-      if (isset($_REQUEST["vide"])) {
+      if (isset($_REQUEST["vide"]))
         echo '<p class="messageErreur">Merci de saisir votre login et votre mot de passe</p>';
-      }
-      ?>
+?>
   </section>
 
 </body>

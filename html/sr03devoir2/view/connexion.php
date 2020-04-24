@@ -27,25 +27,25 @@
 	</div>
 <?php
 	session_start();
-      if (isset($_REQUEST["vide"])) {
-        echo '<p class="messageErreur">Merci de saisir votre login et votre mot de passe</p>';
-      } else if (isset($_REQUEST["badvalue"])) {
-	      echo '<p class="messageErreur">Authentification ratee.</p>';
-	      if(isset($_SESSION['tentatives'])){
+      	if (isset($_REQUEST["vide"])) {
+        	echo '<p class="messageErreur">Merci de saisir votre login et votre mot de passe</p>';
+      	} else if (isset($_REQUEST["badvalue"])) {
+	      	echo '<p class="messageErreur">Authentification ratee.</p>';
+	      	if(isset($_SESSION['tentatives'])){
 			if($_SESSION['tentatives']==3)
 				echo 'Vous etes bloque, reessayez plus tard';
 			else
 		      		echo 'Tentatives restantes : '. (3 - $_SESSION['tentatives']);
-	      }
-      } else if (isset($_REQUEST["changemdpfail"])){
+	      	}
+      	} else if (isset($_REQUEST["changemdpfail"])){
 		echo '<p class="messageErreur">Votre mot de passe n\'a pas pu etre mis a jour. Ressayez.</p>';
-      } else if (isset($_REQUEST["changeok"])){
+      	} else if (isset($_REQUEST["changeok"])){
 		echo '<p class="messageReussite">Votre mot de passe a bien ete mis a jour.</p>';
-      } else if (isset($_REQUEST['compteok'])) {
+      	} else if (isset($_REQUEST['compteok'])) {
 		echo '<p class="messageReussite">Compte cree.</p>';
-      } else if (isset($_REQUEST['comptefail'])) {
+      	} else if (isset($_REQUEST['comptefail'])) {
 		echo '<p class="messageErreur">Le compte n\'a pas pu etre cree. Ressayez.</p>';
-      }
+      	}
 ?>
 
   </section>

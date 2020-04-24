@@ -14,14 +14,13 @@ if(!isset($_SESSION["connected_user"])){
 	exit();
 }
 
-//si l'utilisateur va directement a la messagerie depuis virement pour eviter de pouvoir faire un transfert
-if(isset($_SESSION['userVirement'])){
+if(isset($_SESSION['userVirement']))
 	unset($_SESSION['userVirement']);
-}
+
 ?>
 <script>
-function corpsMessage(body){
- 
+function corpsMessage(body){ 
+
       	body = body.replace('&', '&amp;');
       	body = body.replace('<', '&lt;');
       	body = body.replace('>', '&gt;');
@@ -29,10 +28,8 @@ function corpsMessage(body){
       	body = body.replace("'", '&#x27;');
       	body = body.replace("/", '&#x2F;');
 	body = body.replace("`", '&grave');
-
 	document.getElementById("message").innerHTML = body;
 }
-
 </script>
 
 <!doctype html>
@@ -44,7 +41,6 @@ function corpsMessage(body){
 </head>
 <body>
     <header>
-
 	<h1>Messagerie</h1>
 	<div style="float:right;">
         <form method="POST" action="../controller/controller.php">
@@ -52,12 +48,10 @@ function corpsMessage(body){
             <button class="buttonDeconnexion">Déconnexion</button>
         </form>
 	</div>
-
 	<div style="float:right;">
 		<button class="buttonStyle" onclick="location.href='accueil.php'">Revenir a l'accueil</button>
 	</div>
-
-        <h2 style="text-align:left;"><?php echo $_SESSION["connected_user"]["prenom"];?> <?php echo $_SESSION["connected_user"]["nom"];?></h2>
+        <h2 style="text-align:left;"><?php echo htmlspecialchars($_SESSION["connected_user"]["prenom"]);?> <?php echo htmlspecialchars($_SESSION["connected_user"]["nom"]);?></h2>
     </header>
 
     <section>
@@ -69,8 +63,8 @@ function corpsMessage(body){
 		
               foreach ($_SESSION['messagesRecus'] as $cle => $message) {
                 echo '<tr>';
-                echo '<td>'.$message['nom'].' '.$message['prenom'].'</td>';
-                //echo '<td><button type="button" class="sujet" onclick="corpsMessage(\''.$message['corps_msg'].'\')">'.$message['sujet_msg'].'</button></td>';
+                echo '<td>'.htmlspecialchars($message['nom']).' '.htmlspecialchars($message['prenom']).'</td>';
+                //echo '<td><button class="sujet" onclick="corpsMessage(\''.$message['corps_msg'].'\')">'.$message['sujet_msg'].'</button></td>';
 		echo '<td>'.htmlspecialchars($message['sujet_msg']).'</td>';
 		echo '<td>'.htmlspecialchars($message['corps_msg']).'</td>';
 		echo '</tr>';
@@ -88,7 +82,6 @@ Selectionnez un message.
 	</article>
 
 	<article>
-
           <div class="fieldset_envoi">
 	     <form method="POST" action="../controller/controller.php">
              <input type="hidden" name="action" value="sendmsg">
@@ -103,13 +96,12 @@ Selectionnez un message.
                   	<select name="to">
 			<?php
 			if($_SESSION['connected_user']['profil_user']=="CLIENT"){
-				foreach($_SESSION['listeEmployes'] as $id => $employe){
-					echo '<option value="'.$id.'">'.$employe['nom'].' '.$employe['prenom'].'</option>';
-				}
+				foreach($_SESSION['listeEmployes'] as $id => $employe)
+					echo '<option value="'.$id.'">'.htmlspecialchars($employe['nom']).' '.htmlspecialchars($employe['prenom']).'</option>';
+
 			} else {
-                    		foreach ($_SESSION['listeUsers'] as $id => $user) {
-                      			echo '<option value="'.$id.'">'.$user['nom'].' '.$user['prenom'].'</option>';
-                    		}
+                    		foreach ($_SESSION['listeUsers'] as $id => $user)
+                      			echo '<option value="'.$id.'">'.htmlspecialchars($user['nom']).' '.htmlspecialchars($user['prenom']).'</option>';
 			}
                        ?>
 		  	</select>
@@ -125,19 +117,17 @@ Selectionnez un message.
 		
 
                   <button class="buttonStyle" style="margin-top:3%;">Envoyer</button>
-              	<?php
+              	  <?php
               		if (isset($_REQUEST["msg_ok"])) {
-                	echo '<p class="messageReussite">Message envoyé avec succès.</p>';
-			}else if (isset($_REQUEST['msg_fail'])) {
-			echo '<p class="messageErreur">Le message n\'a pas pu etre envoye.</p>';
+                		echo '<p class="messageReussite">Message envoyé avec succès.</p>';
+			} else if (isset($_REQUEST['msg_fail'])) {
+				echo '<p class="messageErreur">Le message n\'a pas pu etre envoye.</p>';
 			}
-		?>
-
+		  ?>
 	     </div>
 	   </form>	
 	</div>
 	</article>
-
     </section>
 </body>
 </html>

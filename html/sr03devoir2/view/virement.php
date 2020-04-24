@@ -33,9 +33,7 @@ if($_SESSION['userVirement']['numero_compte'] != $_SESSION['connected_user']['nu
 </head>
 <body>
     <header>
-
 	<div><h1>Virement</h1></div>
-	
 	<div style="float:right;">
         <form method="POST" action="../controller/controller.php">
             <input type="hidden" name="action" value="disconnect">
@@ -50,7 +48,7 @@ if($_SESSION['userVirement']['numero_compte'] != $_SESSION['connected_user']['nu
 	</form>
 	</div>
 
-	<h2 style="text-align:left;"><?php echo $_SESSION["connected_user"]["prenom"];?> <?php echo $_SESSION["connected_user"]["nom"];?> <?php if(isset($_SESSION['nomClientVirement'])) echo ' en tant que : '.$_SESSION['nomClientVirement'] ?></h2> 
+	<h2 style="text-align:left;"><?php echo htmlspecialchars($_SESSION["connected_user"]["prenom"]);?> <?php echo htmlspecialchars($_SESSION["connected_user"]["nom"]);?> <?php if(isset($_SESSION['nomClientVirement'])) echo ' en tant que : '.htmlspecialchars($_SESSION['nomClientVirement']) ?></h2> 
     </header>
 
     <section>
@@ -67,7 +65,7 @@ if($_SESSION['userVirement']['numero_compte'] != $_SESSION['connected_user']['nu
 		  <?php
 			foreach ($_SESSION['listeUsers'] as $id => $user) {
 				if($_SESSION['userVirement']['numero_compte'] != $user['numero_compte'])
-                      			echo '<option value="'.$user['numero_compte'].'">'.$user['numero_compte'].' - '.$user['nom'].' '.$user['prenom'].'</option>';
+                      			echo '<option value="'.$user['numero_compte'].'">'.$user['numero_compte'].' - '.htmlspecialchars($user['nom']).' '.htmlspecialchars($user['prenom']).'</option>';
                     	}
                   ?>
 		  </select>

@@ -10,18 +10,17 @@
     <h1>Creer un compte</h1>
     <button class="buttonStyle" onclick="location.href='connexion.php'">Revenir a l'accueil</button>
   </header>
-  
   <section>
         <form method="POST" action="../controller/controller.php">
 	    <div class="loginCreer">
 		<input type="hidden" name="action" value="creerCompte">
-		<input type="text" name="nom" placeholder="nom"/>
-		<input type="text" name="prenom" placeholder="prenom"/>
+		<input type="text" name="nom" placeholder="nom (plaintext only)"/>
+		<input type="text" name="prenom" placeholder="prenom (plaintext only)"/>
 		<input type="radio" name="profil" value="CLIENT" checked/> <span>Client</span>
 		<input type="radio" name="profil" value="EMPLOYE"/><span>Employe</span>
 		<input type="text" name="numcompte" placeholder="numero du compte"/>
 		<input type="text" id="solde" name="solde" placeholder="solde initial"/>
-                <input type="text" name="login" placeholder="login"/>
+                <input type="text" name="login" placeholder="login (plaintext only)"/>
 		<input type="password" id="mdp" class="invalid" name="mdp" placeholder="mdp"/>
 		<button class="buttonConnexion">Creer le compte</button>
 
@@ -31,11 +30,9 @@ var pwd = document.getElementById("mdp");
 var indicP = document.getElementById("indicationPwd");
 var ok=false;
 
-
-
 function afficher(){
 	if(!ok)
-		indicP.style.display="block";
+	   indicP.style.display="block";
 }
 
 function cacher() {
@@ -43,7 +40,6 @@ function cacher() {
 }
 
 pwd.addEventListener("focus", afficher, true);
-
 pwd.addEventListener("blur", cacher, true);
 
 pwd.onkeyup = function() {
@@ -58,7 +54,7 @@ pwd.onkeyup = function() {
 		pwd.classList.add("valid");
 		ok=true;
 		cacher();
-	}else{
+	} else {
 		ok=false;
 		pwd.classList.remove("valid");
 		pwd.classList.add("invalid");
@@ -75,6 +71,5 @@ pwd.onkeyup = function() {
             </div>
 	</form>
   </section>
-
 </body>
 </html>

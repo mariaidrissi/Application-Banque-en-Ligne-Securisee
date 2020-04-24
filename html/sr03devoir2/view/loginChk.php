@@ -43,10 +43,9 @@ if(!isset($_SESSION["connected_user"])){
             </form>
         </div>
 <?php
-      if (isset($_REQUEST["nullvalue"])) {
+      if (isset($_REQUEST["nullvalue"]))
         echo '<p class="messageErreur">Merci de saisir votre login et votre mot de passe</p>';
-      }
-      ?>
+?>
   </section>
 
 </body>

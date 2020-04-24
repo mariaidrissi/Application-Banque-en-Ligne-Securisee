@@ -15,8 +15,16 @@ if(!isset($_SESSION["connected_user"]) || $_SESSION['connected_user']['profil_us
 }
 ?>
 
-<script>
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>Fiche client</title>
+  <link rel="stylesheet" type="text/css" media="all"  href="../css/style.css" />
+</head>
+<body>
 
+<script>
 function afficherClient(nom, prenom, login, num, solde)
 {
 	var infoC = document.getElementById("infoClient");
@@ -27,17 +35,7 @@ function afficherClient(nom, prenom, login, num, solde)
 	infos +=  '<form action="../controller/controller.php" method="post"><input type="hidden" name="action" value="virement"><input type="hidden" name="numcompte" value="'+num+'"><input type="hidden" name="nom" value="'+prenom+' '+nom+'"><input class="buttonStyle" type="submit" value="Effectuer un virement pour ce client"></form>';
 	infoC.innerHTML = infos;
 }
-
-
 </script>
-<!doctype html>
-<html lang="fr">
-<head>
-  <meta charset="utf-8">
-  <title>Fiche client</title>
-  <link rel="stylesheet" type="text/css" media="all"  href="../css/style.css" />
-</head>
-<body>
     <header>
 	<h1>Fiches client</h1>
 	<div style="float:right;">
@@ -51,20 +49,20 @@ function afficherClient(nom, prenom, login, num, solde)
 		<button class="buttonStyle" onclick="location.href='accueil.php'">Revenir a l'accueil</button>
 	</div>
 
-	<h2 style="text-align:left;">Employe : <?php echo $_SESSION['connected_user']['nom']?> <?php echo $_SESSION['connected_user']['prenom']?></h2>
+	<h2 style="text-align:left;">Employe : <?php echo htmlspecialchars($_SESSION['connected_user']['nom'])?> <?php echo htmlspecialchars($_SESSION['connected_user']['prenom'])?></h2>
     </header>
 
     <section class="ficheclient">
 	<article class="clientList">
 	  <div class="clientTable">	
             <table>
-              <tr><th>Clients</th>
-	      <?php
-		
-              foreach ($_SESSION['listeClients'] as $cle => $client) {
-                echo '<tr>';
-		echo '<td><button class="linkClient" onclick="afficherClient(\''.$client['nom'].'\', \''.$client['prenom'].'\', \''.$client['login'].'\', \''.$client['numero_compte'].'\', \''.$client['solde_compte'].'\')">'.$client['nom'].' '.$client['prenom'].'</button></td>';
-              }
+              <tr><th>Clients</th></tr>
+		<?php		
+              	foreach ($_SESSION['listeClients'] as $cle => $client) {
+                	echo '<tr>';
+			echo '<td><button class="linkClient" onclick="afficherClient(\''.htmlspecialchars($client['nom']).'\', \''.htmlspecialchars($client['prenom']).'\', \''.htmlspecialchars($client['login']).'\', \''.$client['numero_compte'].'\', \''.$client['solde_compte'].'\')">'.htmlspecialchars($client['nom']).' '.htmlspecialchars($client['prenom']).'</button></td>';
+			echo '</tr>';
+              	}
                ?>
 	    </table>
 	  </div>

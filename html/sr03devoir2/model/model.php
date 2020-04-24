@@ -1,12 +1,13 @@
 <?php
 
-function getMySqliConnection() {
+function getMySqliConnection() 
+{
   $db_connection_array = parse_ini_file("../config/config.ini"); 
-  //return new mysqli('localhost','root', 'root', 'sr03');
   return new mysqli($db_connection_array['DB_HOST'], $db_connection_array['DB_USER'], $db_connection_array['DB_PASSWD'], $db_connection_array['DB_NAME']);
 }
 
-function findUser($login, $pwd) {
+function findUser($login, $pwd) 
+{
   $mysqli = getMySqliConnection();
   $utilisateur = false;
   if ($mysqli->connect_error) {
@@ -16,8 +17,6 @@ function findUser($login, $pwd) {
 
 	//$login = $mysqli->real_escape_string($login);
 	//$pwd = $mysqli->real_escape_string($pwd);
-	
-	//error_log(password_hash($pwd, PASSWORD_BCRYPT));
 	
 	$req = $mysqli->prepare("select nom,prenom,login,mot_de_passe,id_user,numero_compte,profil_user,solde_compte from USERS where login=?;");
 	if ($req) {
@@ -31,6 +30,7 @@ function findUser($login, $pwd) {
 				$utilisateur = false;
 			}
 		}
+		$result->free();
           	$req->close();
       	 }
       $mysqli->close();
@@ -70,21 +70,22 @@ function updateMdp($login, $pwd)
   	} else {
 		//$login = $mysqli->real_escape_string($login);
 		//$pwd = $mysqli->real_escape_string($pwd);
-
+		
 		$pwd = password_hash($pwd, PASSWORD_BCRYPT);
-
 		$req = $mysqli->prepare("UPDATE USERS SET mot_de_passe=? WHERE login=?;");
-	if ($req) {
-	 	$req->bind_param('ss',$pwd,$login);
-		$result = $req->execute();
-          	$req->close();
-      	 }
-      $mysqli->close();
-  }
+		if ($req) {
+	 		$req->bind_param('ss',$pwd,$login);
+			$result = $req->execute();
+          		$req->close();
+      	 	}
+  	}
+	$mysqli->close();
+
   return $result;
 }
 
-function findAllUsers() {
+function findAllUsers() 
+{
   $mysqli = getMySqliConnection();
 
   $listeUsers = array();
@@ -92,7 +93,6 @@ function findAllUsers() {
   if ($mysqli->connect_error) {
       echo 'Erreur connection BDD (' . $mysqli->connect_errno . ') '. $mysqli->connect_error;
   } else {
-	  
 	$req = $mysqli->prepare("select nom,prenom,login,id_user, numero_compte from USERS;");
 	if ($req) {
 		$req->execute();
@@ -100,21 +100,21 @@ function findAllUsers() {
 		while($unUser = $result->fetch_assoc()){
         	    	$listeUsers[$unUser['id_user']] = $unUser;
 		}
+		$result->free();
 		$req->close();
 	}
-	$mysqli->close();
   }
+  $mysqli->close();
   return $listeUsers;
 }
 
-function findUserFromCompte($compte) {
-
+function findUserFromCompte($compte) 
+{
   $mysqli = getMySqliConnection();
   $utilisateur = false;
   if ($mysqli->connect_error) {
       echo 'Erreur connection BDD (' . $mysqli->connect_errno . ') '. $mysqli->connect_error;
-  } 
-  else {
+  } else {
 	$req = $mysqli->prepare("select nom,prenom,login,mot_de_passe,id_user,numero_compte,profil_user,solde_compte from USERS where numero_compte=?;");
 	if ($req) {
 	 	$req->bind_param('s', $compte);
@@ -125,21 +125,20 @@ function findUserFromCompte($compte) {
 		}
 		$result->free();
           	$req->close();
-      	 }
-      $mysqli->close();
+      	}
+	$mysqli->close();
   }
   return $utilisateur;
 }
 
 
-function transfert($dest, $src, $mt) {
+function transfert($dest, $src, $mt) 
+{
   $mysqli = getMySqliConnection();
-
   if($mt<=0){
 	$mysqli->close();
 	return false;
   }
-
   if ($mysqli->connect_error) {
 	  echo 'Erreur connection BDD (' . $mysqli->connect_errno . ') '. $mysqli->connect_error;
 	  return false;
@@ -158,15 +157,17 @@ function transfert($dest, $src, $mt) {
 	      echo 'Erreur dans le transfert !';
 	      return false;
       }
+      $req1->close();
+      $req2->close();
       $mysqli->close();
   }
   return true;
 }
 
 
-function findMessagesInbox($userid) {
+function findMessagesInbox($userid) 
+{
   $mysqli = getMySqliConnection();
-
   $listeMessages = array();
 
   if ($mysqli->connect_error) {
@@ -192,16 +193,14 @@ function findMessagesInbox($userid) {
 }
 
 
-function addMessage($to,$from,$subject,$body) {
+function addMessage($to,$from,$subject,$body) 
+{
   $mysqli = getMySqliConnection();
 
   if ($mysqli->connect_error) {
 	  echo 'Erreur connection BDD (' . $mysqli->connect_errno . ') '. $mysqli->connect_error;
 	  return false;
   } else {
-
-	//$subject = htmlspecialchars($subject);
-	//$body = htmlspecialchars($body);
 
 	$subject = filter_var($subject, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
 	$body = filter_var($body, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
@@ -221,15 +220,14 @@ function addMessage($to,$from,$subject,$body) {
 }
 
 
-function listerEmployes(){
-
+function listerEmployes()
+{
   $listeEmployes = array();
   $mysqli = getMySqliConnection();
 
   if ($mysqli->connect_error) {
       echo 'Erreur connection BDD (' . $mysqli->connect_errno . ') '. $mysqli->connect_error;
   } else {
-
 	$req = $mysqli->prepare("select id_user, nom, prenom, numero_compte, solde_compte from USERS where profil_user='EMPLOYE';");
 	if ($req) {
 		$req->execute();
@@ -248,23 +246,21 @@ function listerEmployes(){
 }
 
 
-function listerClients(){
-
+function listerClients()
+{
   $listeClients = array();
   $mysqli = getMySqliConnection();
 
   if ($mysqli->connect_error) {
       echo 'Erreur connection BDD (' . $mysqli->connect_errno . ') '. $mysqli->connect_error;
   } else {
-
 	$req = $mysqli->prepare("select id_user, nom, prenom,login, numero_compte, solde_compte from USERS where profil_user='CLIENT';");
 	if ($req) {
 		$req->execute();
 		$result = $req->get_result();
         	if ($result->num_rows != 0){
-          		while ($unClient = $result->fetch_assoc()) {
+          		while ($unClient = $result->fetch_assoc())
 		  		$listeClients[$unClient['id_user']] = $unClient;
-			}
 		}
 		$result->free();
           	$req->close();
@@ -285,5 +281,15 @@ function isPasswordValid($mdp)
 	else return false;
 }
 
+function isInputInvalid($input)
+{
+	$interdits = array('<','>','(', ')', ';', '-', '{', '}', '\'', '\0', '\"', '\\', '\%');
+
+	$invalid = false;
+	foreach($interdits as $i){
+		$invalid = $invalid || strpos($input, $i);
+	}
+	return $invalid;
+}
 
 ?>
