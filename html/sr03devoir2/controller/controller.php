@@ -1,6 +1,6 @@
 <?php
 require_once('../model/model.php');
-
+require_once('../config/include.php');
 session_start();
 
 if(!isset($_SESSION['expire']) || time() > $_SESSION['expire']){
@@ -199,11 +199,16 @@ if (isset($_REQUEST['action'])) {
 
       } else if ($_REQUEST['action'] == 'sendmsg') {
 
-		$result = addMessage($_REQUEST['to'],$_SESSION["connected_user"]["id_user"],$_REQUEST['sujet'],$_REQUEST['corps']);
-		if($result == false)
-			$url_redirect=$urlredirmessagefail;
-		else
-			$url_redirect = $urlredirmessageok;
+	      $utilisateurDest = findUserFromId($_REQUEST['to']);
+		if($utilisateurDest['profil_user'] != 'EMPLOYE' && $_SESSION['connected_user']['profil_user'] == 'CLIENT'){
+			$url_redirect = $urlredirmessagefail;
+		} else {
+			$result = addMessage($_REQUEST['to'],$_SESSION["connected_user"]["id_user"],$_REQUEST['sujet'],$_REQUEST['corps']);
+			if($result == false)
+				$url_redirect=$urlredirmessagefail;
+			else
+				$url_redirect = $urlredirmessageok;
+		}
               
       } else if ($_REQUEST['action'] == 'msglist') {
 		

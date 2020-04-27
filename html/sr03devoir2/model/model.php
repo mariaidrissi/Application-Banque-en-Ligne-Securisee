@@ -132,6 +132,30 @@ function findUserFromCompte($compte)
 }
 
 
+function findUserFromId($id) 
+{
+  $mysqli = getMySqliConnection();
+  $utilisateur = false;
+  if ($mysqli->connect_error) {
+      echo 'Erreur connection BDD (' . $mysqli->connect_errno . ') '. $mysqli->connect_error;
+  } else {
+	$req = $mysqli->prepare("select profil_user from USERS where id_user=?;");
+	if ($req) {
+	 	$req->bind_param('i', $id);
+		$req->execute();
+		$result = $req->get_result();
+         	if ($result->num_rows != 0){
+			$utilisateur = $result->fetch_assoc();
+		}
+		$result->free();
+          	$req->close();
+      	}
+	$mysqli->close();
+  }
+  return $utilisateur;
+}
+
+
 function transfert($dest, $src, $mt) 
 {
   $mysqli = getMySqliConnection();
@@ -201,13 +225,9 @@ function addMessage($to,$from,$subject,$body)
 	  echo 'Erreur connection BDD (' . $mysqli->connect_errno . ') '. $mysqli->connect_error;
 	  return false;
   } else {
-
 	$subject = filter_var($subject, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
 	$body = filter_var($body, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
 	
-	//$subject = preg_replace("/\r\n|\r|\n/",'<br/>',$subject);
-	//$body = preg_replace("/\r\n|\r|\n/",'<br/>',$body);
-
 	$req=$mysqli->prepare("insert into MESSAGES(id_user_to,id_user_from,sujet_msg,corps_msg) values(?,?,?,?);");
 	$req->bind_param('iiss',$to, $from, $subject, $body);
         if (!$result = $req->execute()) {
@@ -283,7 +303,7 @@ function isPasswordValid($mdp)
 
 function isInputInvalid($input)
 {
-	$interdits = array('<','>','(', ')', ';', '-', '{', '}', '\'', '\0', '\"', '\\', '\%');
+	$interdits = array('<','>','(', ')', ';', '-', '{', '}', '\'', '\0', '\"', '\\', '\%', ';');
 
 	$invalid = false;
 	foreach($interdits as $i){

@@ -1,4 +1,6 @@
 <?php
+
+require_once('../config/include.php');
 session_start();
 
 if(!isset($_SESSION['expire']) || time() > $_SESSION['expire']){
@@ -8,7 +10,7 @@ if(!isset($_SESSION['expire']) || time() > $_SESSION['expire']){
 	exit();
 }
 
-if(!isset($_SESSION["connected_user"])){
+if(!isset($_SESSION["connected_user"]) || $_SESSION["connected_user"] == ""){
 	$url_redirect = "index.php";
 	header("Location: $url_redirect");
 	exit();

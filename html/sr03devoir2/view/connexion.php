@@ -26,6 +26,7 @@
 		<a class="linkMdp" href="creerCompte.php">Creer un compte</a>
 	</div>
 <?php
+	require_once('../config/include.php');
 	session_start();
       	if (isset($_REQUEST["vide"])) {
         	echo '<p class="messageErreur">Merci de saisir votre login et votre mot de passe</p>';
