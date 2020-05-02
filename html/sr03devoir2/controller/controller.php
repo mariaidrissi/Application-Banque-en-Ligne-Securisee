@@ -126,12 +126,14 @@ if (isset($_REQUEST['action'])) {
 
       } else if($_REQUEST['action'] == 'authenticateChk'){
 
-		//on re-verifie a chaque etape
-		if($_SESSION['connected_user']['profil_user'] == "CLIENT" && $_SESSION['userVirement']['numero_compte'] != $_SESSION['connected_user']['numero_compte']){
+		if(!isset($_SESSION['userVirement'])){
+			$url_redirect = $urlredirdisconnect;
+
+		} else if($_SESSION['connected_user']['profil_user'] == "CLIENT" && $_SESSION['userVirement']['numero_compte'] != $_SESSION['connected_user']['numero_compte']){
 			$url_redirect =  $urlredirdisconnect;
 
-		} else if(!isset($_SESSION['userVirement'])){
-			$url_redirect = $urlredirdisconnect;
+		} else if($_SESSION['userVirement']['profil_user'] == 'EMPLOYE' && $_SESSION['userVirement']['numero_compte'] != $_SESSION['connected_user']['numero_compte']) {  //si un employe veut faire un virement en tant qu'un autre employe
+                        $url_redirect = $urlredirdisconnect;
 
 	      	} else if(!isset($_REQUEST['login']) || !isset($_REQUEST['mdp']) || $_REQUEST['login'] == "" || $_REQUEST['mdp'] == "") {
 			$url_redirect = $urlredirloginchknull;
